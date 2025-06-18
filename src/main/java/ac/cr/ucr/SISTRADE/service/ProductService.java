@@ -1,6 +1,5 @@
 package ac.cr.ucr.SISTRADE.service;
 
-
 import ac.cr.ucr.SISTRADE.model.Product;
 import ac.cr.ucr.SISTRADE.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;

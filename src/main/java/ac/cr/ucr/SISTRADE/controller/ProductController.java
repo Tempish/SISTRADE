@@ -1,6 +1,5 @@
 package ac.cr.ucr.SISTRADE.controller;
 
-
 import ac.cr.ucr.SISTRADE.model.Product;
 import ac.cr.ucr.SISTRADE.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,12 +88,4 @@ public class ProductController  {
 
         return ResponseEntity.ok(this.productService.editProduct(id, product));
     }
-
-
-
-
-
-
-
-
 }
