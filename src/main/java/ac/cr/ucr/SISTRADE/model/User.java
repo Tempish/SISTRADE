@@ -1,5 +1,8 @@
 package ac.cr.ucr.SISTRADE.model;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class User {
     private String name;
     private String password;

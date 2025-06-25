@@ -1,11 +1,19 @@
 package ac.cr.ucr.SISTRADE.model;
 
-public class Product {
+import jakarta.persistence.*;
 
+@Entity
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer ownerId;
+    @Column(nullable = false)
     Double marketPrice;
+    @Column(nullable = false, unique = true)
     String name;
+    @Column(nullable = false, length = 30)
     String type;
+    @Column(nullable = false)
     String description;
 
 
