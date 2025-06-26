@@ -1,14 +1,21 @@
 package ac.cr.ucr.SISTRADE.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "tb_user")
 public class User {
-    private String name;
-    private String password;
-    private String address;
-    private Integer age;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false, unique = true)
+    private String name;
+    @Column(nullable = false)
+    private String password;
+    @Column(nullable = false)
+    private String address;
+    @Column(nullable = false, length = 3)
+    private Integer age;
 
     public User(){
 
