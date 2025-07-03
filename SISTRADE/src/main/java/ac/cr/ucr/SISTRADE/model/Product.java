@@ -7,55 +7,42 @@ import jakarta.persistence.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
+    @Column(nullable = false)
     Integer ownerId;
     @Column(nullable = false)
     Double marketPrice;
     @Column(nullable = false, unique = true)
+
     String name;
     @Column(nullable = false, length = 30)
     String type;
     @Column(nullable = false)
     String description;
 
-
+    public Product(String description, String type, String name, Double marketPrice, Integer ownerId, Integer id) {
+        this.description = description;
+        this.type = type;
+        this.name = name;
+        this.marketPrice = marketPrice;
+        this.ownerId = ownerId;
+        this.id = id;
+    }
     public Product() {
         this.description = "";
         this.type = "";
         this.name = "";
         this.marketPrice = 0.0;
         this.ownerId = 0;
+        this.id = 0;
     }
 
-    public Product(String description, String type, String name, Double marketPrice, Integer ownerID) {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
-        this.type = type;
-        this.name = name;
-        this.marketPrice = marketPrice;
-        this.ownerId = ownerID;
-    }
-
-    public Integer getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Integer ownerID) {
-        this.ownerId = ownerID;
-    }
-
-    public Double getMarketPrice() {
-        return marketPrice;
-    }
-
-    public void setMarketPrice(Double marketPrice) {
-        this.marketPrice = marketPrice;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getType() {
@@ -66,11 +53,36 @@ public class Product {
         this.type = type;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getMarketPrice() {
+        return marketPrice;
+    }
+
+    public void setMarketPrice(Double marketPrice) {
+        this.marketPrice = marketPrice;
+    }
+
+    public Integer getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Integer ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
+

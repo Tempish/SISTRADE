@@ -40,6 +40,27 @@ public class UserService {
 
     }
 
+    public Optional<User> loginUser(String password, String name) {
+
+        Optional<User> userOpt = this.userRepository.findByName(name);
+        if (userOpt.isPresent()){
+
+            User user = userOpt.get();
+
+            if (user.getName().equals(name) && user.getPassword().equals(password)){
+
+                return Optional.of(user);
+
+            }
+
+            return Optional.empty();
+
+        }
+
+        return this.userRepository.findByPassword(password);
+    }
+
+
     public Optional<User> findUserByName(String name) {
         return this.userRepository.findByName(name);
     }

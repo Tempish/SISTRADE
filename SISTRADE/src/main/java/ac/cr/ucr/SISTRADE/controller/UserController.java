@@ -72,6 +72,20 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginInfo) {
+        String name = loginInfo.get("name");
+        String password = loginInfo.get("password");
+
+        Optional<User> user = userService.loginUser(password, name);
+
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get().getId());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Incorrecto, vuelva a intentar");
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> editUser(@Validated @PathVariable Integer id, @RequestBody User user, BindingResult result){
 

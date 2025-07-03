@@ -31,10 +31,10 @@ public class ProductController  {
             }
             return ResponseEntity.badRequest().body(errors);
         }
-        Optional<Product> productOp = this.productService.findProductById(product.getOwnerId());
+        Optional<Product> productOp = this.productService.findProductByName(product.getName());
 
         if(productOp.isPresent()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Product with ID "+product.getOwnerId()+" already exists!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Product with name "+product.getName()+" already exists!");
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(this.productService.saveProduct(product));
