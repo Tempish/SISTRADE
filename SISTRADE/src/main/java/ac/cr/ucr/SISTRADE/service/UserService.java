@@ -39,4 +39,8 @@ public class UserService {
         return this.userRepository.save(user);
 
     }
+
+    public Optional<User> findUserByName(String name) {
+        return this.userRepository.findByName(name);
+    }
 }

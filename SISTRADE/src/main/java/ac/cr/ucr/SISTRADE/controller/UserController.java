@@ -32,10 +32,10 @@ public class UserController {
             }
             return ResponseEntity.badRequest().body(errors);
         }
-        Optional<User> userOp = this.userService.findUserById(user.getId());
+        Optional<User> userOp = this.userService.findUserByName(user.getName());
 
         if(userOp.isPresent()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("User with ID "+user.getId()+" already exists!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User with name "+user.getName()+" already exists!");
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.saveUser(user));
