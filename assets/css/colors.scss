@@ -1,0 +1,183 @@
+@import "bootstrap/scss/functions";
+
+$gray-100: #fdfaf5;
+$gray-200: #f3e9d6;
+$gray-300: #e6d5bc;
+$gray-400: #d3b999;
+$gray-500: #b19470;
+$gray-600: #7c614d;
+$gray-700: #5e473a;
+$gray-800: #3b2b25;
+$gray-900: #1d1512;
+
+@import "bootstrap/scss/variables";
+
+$warm-yellow: #f5b700;
+$warm-orange: #f29305;
+$warm-red: #d94f30;
+$warm-pink: #f25c94;
+$warm-beige: #f2e2c4;
+
+$dark-turquoise: #004f4f;
+$dark-turquoise-light: #007777;
+$dark-turquoise-dark: #003838;
+$blackish: #1a1a1a;
+$whiteish: #fef9f1;
+
+$sunbeam: #ffd966;
+$honey: #fcbf49;
+$amber: #e59b00;
+$contrast: #004d4d;
+
+$custom-theme-colors: (
+  "sunbeam": $sunbeam,
+  "honey": $honey,
+  "amber": $amber,
+  "contrast": $contrast
+);
+
+$theme-colors: map-merge(
+  (
+    "primary": $warm-yellow,
+    "secondary": $warm-orange,
+    "success": $dark-turquoise,
+    "info": $dark-turquoise-light,
+    "warning": $warm-pink,
+    "danger": $warm-red,
+    "light": $warm-beige,
+    "dark": $dark-turquoise-dark
+  ),
+  $custom-theme-colors
+);
+
+$theme-colors-bg-subtle: map-merge(
+  (
+    "primary": mix($warm-yellow, $whiteish, 85%),
+    "secondary": mix($warm-orange, $whiteish, 85%),
+    "success": mix($dark-turquoise, $whiteish, 85%),
+    "info": mix($dark-turquoise-light, $whiteish, 85%),
+    "warning": mix($warm-pink, $whiteish, 85%),
+    "danger": mix($warm-red, $whiteish, 85%),
+    "light": mix($warm-beige, $whiteish, 85%),
+    "dark": mix($dark-turquoise-dark, $whiteish, 85%)
+  ),
+  (
+    "sunbeam": mix($sunbeam, $whiteish, 85%),
+    "honey": mix($honey, $whiteish, 85%),
+    "amber": mix($amber, $whiteish, 85%),
+    "contrast": mix($contrast, $whiteish, 85%)
+  )
+);
+
+$theme-colors-border-subtle: map-merge(
+  (
+    "primary": mix($warm-yellow, $blackish, 10%),
+    "secondary": mix($warm-orange, $blackish, 10%),
+    "success": mix($dark-turquoise, $blackish, 10%),
+    "info": mix($dark-turquoise-light, $blackish, 10%),
+    "warning": mix($warm-pink, $blackish, 10%),
+    "danger": mix($warm-red, $blackish, 10%),
+    "light": mix($warm-beige, $blackish, 10%),
+    "dark": mix($dark-turquoise-dark, $blackish, 10%)
+  ),
+  (
+    "sunbeam": mix($sunbeam, $blackish, 10%),
+    "honey": mix($honey, $blackish, 10%),
+    "amber": mix($amber, $blackish, 10%),
+    "contrast": mix($contrast, $blackish, 10%)
+  )
+);
+
+// 7. Text colors
+$theme-colors-text: map-merge(
+  (
+    "primary": $blackish,
+    "secondary": $blackish,
+    "success": $whiteish,
+    "info": $whiteish,
+    "warning": $blackish,
+    "danger": $whiteish,
+    "light": $blackish,
+    "dark": $whiteish
+  ),
+  (
+    "sunbeam": $blackish,
+    "honey": $blackish,
+    "amber": $blackish,
+    "contrast": $whiteish
+  )
+);
+
+$theme-colors-dark: map-merge(
+  (
+    "primary": $warm-yellow,
+    "secondary": $warm-orange,
+    "success": $dark-turquoise,
+    "info": $dark-turquoise-light,
+    "warning": $warm-pink,
+    "danger": $warm-red,
+    "light": $dark-turquoise-dark,
+    "dark": $warm-beige
+  ),
+  $custom-theme-colors
+);
+
+$theme-colors-text-dark: map-merge(
+  (
+    "primary": $blackish,
+    "secondary": $blackish,
+    "success": $whiteish,
+    "info": $whiteish,
+    "warning": $blackish,
+    "danger": $whiteish,
+    "light": $whiteish,
+    "dark": $blackish
+  ),
+  (
+    "sunbeam": $blackish,
+    "honey": $blackish,
+    "amber": $blackish,
+    "contrast": $whiteish
+  )
+);
+
+$theme-colors-bg-subtle-dark: map-merge(
+  (
+    "primary": mix($warm-yellow, $blackish, 85%),
+    "secondary": mix($warm-orange, $blackish, 85%),
+    "success": mix($dark-turquoise, $blackish, 85%),
+    "info": mix($dark-turquoise-light, $blackish, 85%),
+    "warning": mix($warm-pink, $blackish, 85%),
+    "danger": mix($warm-red, $blackish, 85%),
+    "light": mix($dark-turquoise-dark, $blackish, 85%),
+    "dark": mix($warm-beige, $blackish, 85%)
+  ),
+  (
+    "sunbeam": mix($sunbeam, $blackish, 85%),
+    "honey": mix($honey, $blackish, 85%),
+    "amber": mix($amber, $blackish, 85%),
+    "contrast": mix($contrast, $blackish, 85%)
+  )
+);
+
+$theme-colors-border-subtle-dark: map-merge(
+  (
+    "primary": mix($warm-yellow, $whiteish, 10%),
+    "secondary": mix($warm-orange, $whiteish, 10%),
+    "success": mix($dark-turquoise, $whiteish, 10%),
+    "info": mix($dark-turquoise-light, $whiteish, 10%),
+    "warning": mix($warm-pink, $whiteish, 10%),
+    "danger": mix($warm-red, $whiteish, 10%),
+    "light": mix($dark-turquoise-dark, $whiteish, 10%),
+    "dark": mix($warm-beige, $whiteish, 10%)
+  ),
+  (
+    "sunbeam": mix($sunbeam, $whiteish, 10%),
+    "honey": mix($honey, $whiteish, 10%),
+    "amber": mix($amber, $whiteish, 10%),
+    "contrast": mix($contrast, $whiteish, 10%)
+  )
+);
+
+
+@import "bootstrap/scss/bootstrap";
