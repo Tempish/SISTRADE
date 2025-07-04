@@ -13,21 +13,21 @@ public class Product {
     @Column(nullable = false)
     Double marketPrice;
     @Column(nullable = false, unique = true)
-
     String name;
     @Column(nullable = false, length = 30)
     String type;
     @Column(nullable = false)
     String description;
 
-    public Product(String description, String type, String name, Double marketPrice, Integer ownerId, Integer id) {
-        this.description = description;
-        this.type = type;
-        this.name = name;
-        this.marketPrice = marketPrice;
-        this.ownerId = ownerId;
+    public Product(Integer id, Integer ownerId, Double marketPrice, String name, String type, String description) {
         this.id = id;
+        this.ownerId = ownerId;
+        this.marketPrice = marketPrice;
+        this.name = name;
+        this.type = type;
+        this.description = description;
     }
+
     public Product() {
         this.description = "";
         this.type = "";
