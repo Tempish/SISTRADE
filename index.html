@@ -32,6 +32,11 @@
     </nav>
 
     <main class="container mt-5">
+        <div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+        <input type="text" id="searchType" class="form-control form-control-lg" placeholder="Filtrar por tipo..." aria-label="Filtrar por tipo">
+    </div>
+</div>
         <div class="row row-cols-1 row-cols-md-3 g-3" id="productos">
             <div class="col">
                 <div class="card h-100">
@@ -51,49 +56,80 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const apiProductUrl = "http://localhost:8080/api/product";
-        const apiUserUrl = "http://localhost:8080/api/user";
+ <script>
+    const apiProductUrl = "http://localhost:8080/api/product";
+    const apiUserUrl = "http://localhost:8080/api/user";
 
-        async function cargarProductos() {
-            await fetch(apiProductUrl)
-                .then(res => res.json())
-                .then(productos => {
-                    const productContainer = document.getElementById("productos");
-                    productContainer.innerHTML = "";
+    let allProducts = [];
 
-                    productos.forEach(producto => {
-
-                        productContainer.innerHTML += `
-                            <div class="col">
-                                <div class="card h-100">
-                                    <div class="card-body d-flex flex-column justify-content-center">
-                                        <h5 class="card-title display-6">${producto.name}</h5>
-                                        <p class="card-subtitle lead" id="author-${producto.id}">Published by: ?</p>
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Market Price: ${producto.marketPrice}</li>
-                                            <li class="list-group-item">Type: ${producto.type}</li>
-                                            <li class="list-group-item "></li>
-                                        </ul>
-                                        <p class="card-text">Description: ${producto.description}</p>
-                                    </div>
-                                </div>
-                            </div>`;
-                        fetch(`${apiUserUrl}/${producto.ownerId}`)
-                            .then(res => res.json())
-                            .then(user => {
-                                document.getElementById(`author-${producto.id}`).textContent = `Published by: ${user.name}`;
-                            })
-                    });
-                });
-
+    // Función para cargar los productos desde la API
+    async function cargarProductos() {
+        try {
+            const res = await fetch(apiProductUrl);
+            const productos = await res.json();
+            allProducts = productos;
+            renderizarProductos(allProducts);
+        } catch (error) {
+            console.error("Error al cargar productos:", error);
         }
+    }
 
+    
+    function renderizarProductos(productos) {
+        const productContainer = document.getElementById("productos");
+        productContainer.innerHTML = "";
 
-        window.onload = () => {
-            cargarProductos();
-        };
-    </script>
+        productos.forEach(producto => {
+            const tarjeta = document.createElement("div");
+            tarjeta.classList.add("col");
+
+            tarjeta.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <h5 class="card-title display-6">${producto.name}</h5>
+                        <p class="card-subtitle lead" id="author-${producto.id}">Published by: ?</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Market Price: ${producto.marketPrice}</li>
+                            <li class="list-group-item">Type: ${producto.type}</li>
+                            <li class="list-group-item"></li>
+                        </ul>
+                        <p class="card-text">Description: ${producto.description}</p>
+                    </div>
+                </div>
+            `;
+            productContainer.appendChild(tarjeta);
+
+           
+            fetch(`${apiUserUrl}/${producto.ownerId}`)
+                .then(res => res.json())
+                .then(user => {
+                    const authorElement = document.getElementById(`author-${producto.id}`);
+                    if (authorElement) {
+                        authorElement.textContent = `Published by: ${user.name}`;
+                    }
+                }).catch(err => console.warn("Error cargando autor:", err));
+        });
+    }
+
+    //filtrado para mientras escribe
+    document.addEventListener("DOMContentLoaded", () => {
+        cargarProductos();
+
+        const searchInput = document.getElementById("searchType");
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+
+                const productosFiltrados = allProducts.filter(producto =>
+                    producto.type && producto.type.toLowerCase().includes(searchTerm)
+                );
+
+                renderizarProductos(productosFiltrados);
+            });
+        }
+    });
+</script>
+
 </body>
 
 </html>
