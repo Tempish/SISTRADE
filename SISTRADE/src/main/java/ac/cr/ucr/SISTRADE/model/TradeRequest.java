@@ -3,6 +3,7 @@ package ac.cr.ucr.SISTRADE.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "tb_trade")
 public class TradeRequest {
 
     @Id
