@@ -13,8 +13,9 @@ import java.util.Optional;
 public interface TradeRequestRepository extends JpaRepository<TradeRequest, Integer> {
 
    List<TradeRequest> findByReceiverId(Integer receiverId);
-   Optional<TradeRequest> findByOfferedProductId (Integer offeredProductId);
 
+   List<TradeRequest> findByRequestedProductId(Integer requestedProductId);
+   List<TradeRequest> findByOfferedProductId (Integer offeredProductId);
 
 
 }

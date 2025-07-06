@@ -34,9 +34,9 @@ public class TradeRequestController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        Optional<TradeRequest> tradeFind = this.requestService.findByOfferedProductId(tradeRequest.getOfferedProductId());
-        if(tradeFind.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You are already offering this product!!!!");
+        List<TradeRequest> tradeFind = this.requestService.findByOfferedProductId(tradeRequest.getOfferedProductId());
+        if(!tradeFind.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This product is already in a request!!! ");
         }
 
 
@@ -44,9 +44,11 @@ public class TradeRequestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.requestService.saveRequest(tradeRequest));
     }
 
+
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findByReceiverId(@PathVariable Integer id){
-      //  Optional<TradeRequest> requestFind = this.requestService.findByRequestId(id);
+
 
         List<TradeRequest> tradeRequestOp = this.requestService.findByUserId(id);
 
@@ -55,26 +57,47 @@ public class TradeRequestController {
         }
 
 
-//        if(!requestFind.isPresent()){
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This request doesn't exist");
-//        }
-//        return ResponseEntity.ok(requestFind);
+
         return ResponseEntity.ok(tradeRequestOp);
 
 
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/accepted/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id){
 
         Optional<TradeRequest> tradeFind = this.requestService.findByRequestId(id);
-        if(!tradeFind.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This request doesn't exist");
+
+
+        List<TradeRequest> tradeOffer = this.requestService.findByOfferedProductId(tradeFind.get().getOfferedProductId());
+        if(!tradeOffer.isEmpty()){
+           for (TradeRequest request : tradeOffer){
+
+               this.requestService.deleteRequestById(request.getRequestId());
+
+           }
+        }
+        List<TradeRequest> tradeRequested = this.requestService.findByRequestedProductId(tradeFind.get().getRequestedProductId());
+        if(!tradeRequested.isEmpty()){
+            for (TradeRequest request : tradeRequested){
+
+                this.requestService.deleteRequestById(request.getRequestId());
+
+            }
         }
         this.requestService.deleteRequestById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/denied/{id}")
+    public ResponseEntity<?> deleteUserDenied(@PathVariable Integer id) {
 
+        Optional<TradeRequest> tradeFind = this.requestService.findByRequestId(id);
+        if (!tradeFind.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This request doesn't exist");
+        }
+        this.requestService.deleteRequestById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
