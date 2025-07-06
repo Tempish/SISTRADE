@@ -1,0 +1,39 @@
+package ac.cr.ucr.SISTRADE.service;
+
+
+import ac.cr.ucr.SISTRADE.model.TradeRequest;
+import ac.cr.ucr.SISTRADE.repository.TradeRequestRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Optional;
+
+public class TradeRequestService {
+
+    @Autowired
+    TradeRequestRepository TradeRepository;
+
+    public TradeRequest saveRequest(TradeRequest request){
+        return this.TradeRepository.save(request);
+    }
+
+    public void deleteRequestById(Integer id){
+        this.TradeRepository.deleteById(id);
+    }
+
+    public List<TradeRequest> findByUserId(Integer id){
+        return this.TradeRepository.findByReceiverId(id);
+    }
+
+    public Optional<TradeRequest> findByRequestId(Integer id){
+
+        return this.TradeRepository.findById(id);
+    }
+
+
+
+    }
+
+
+
+
