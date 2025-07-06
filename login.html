@@ -23,8 +23,9 @@
             <div class="collapse navbar-collapse" id="menu">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="manageProducts.html">My products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html" id="login">Log In</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manageProducts.html" id="manageProducts" style="display: none;">My products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="requests.html" id="requests" style="display: none;">Trade Requests</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="login.html" id="login">Log In</a></li>
                     <li class="nav-item"><a class="nav-link" href="signup.html" id="signup">Sign Up</a></li>
                 </ul>
             </div>
@@ -132,9 +133,13 @@
         //cambia el navbar si hay un usuario loggeado
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem('userId')) {
+                const manageProducts = document.getElementById("manageProducts");
+                const requests = document.getElementById("requests");
                 const login = document.getElementById("login");
                 const signup = document.getElementById("signup");
 
+                manageProducts.style.display = '';
+                requests.style.display = '';
                 login.setAttribute("data-bs-toggle", "offcanvas");
                 login.href = "#userOffcanvas";
                 login.role = "button";
