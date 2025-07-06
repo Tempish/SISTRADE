@@ -24,12 +24,33 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="manageProducts.html">My products</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="login.html">Log In</a></li>
-                    <li class="nav-item"><a class="nav-link" href="signup.html">Sign Up</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html" id="login">Log In</a></li>
+                    <li class="nav-item"><a class="nav-link" href="signup.html" id="signup">Sign Up</a></li>
                 </ul>
             </div>
         </header>
     </nav>
+
+    <div class="offcanvas offcanvas-end bg-sunbeam" tabindex="-1" id="userOffcanvas"
+        aria-labelledby="userOffcanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title display-3" id="userOffcanvasLabel">User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="userOffcanvasInfo">
+                <ul class="list-group pb-2">
+                    <li class="list-group-item list-group-item-action">Name</li>
+                    <li class="list-group-item list-group-item-action">Address</li>
+                    <li class="list-group-item list-group-item-action">Age</li>
+                </ul>
+            </div>
+            <div class="d-flex flex-column">
+                <button onclick="window.location.href='editProfile.html'" type="button" class="btn btn-outline-dark"
+                    id="btnEdit">Editar perfil</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container col-sm-12 col-md-8 col-lg-6 col-xl-4">
         <h1 class="m-5 display-3 text-center" id="formTitulo">Log in</h1>
@@ -108,10 +129,35 @@
                 });
         });
 
+        //cambia el navbar si hay un usuario loggeado
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem('userId')) {
+                const login = document.getElementById("login");
+                const signup = document.getElementById("signup");
 
-        window.onload = () => {
-            localStorage.removeItem('userId');
-        };
+                login.setAttribute("data-bs-toggle", "offcanvas");
+                login.href = "#userOffcanvas";
+                login.role = "button";
+                login.setAttribute("aria-controls", "userOffcanvas");
+                fetch(`${apiUrl}/${localStorage.getItem('userId')}`)
+                    .then(res => res.json())
+                    .then(user => {
+                        login.innerText = user.name;
+
+                        document.getElementById("userOffcanvasLabel").innerText = user.name;
+                        document.getElementById("userOffcanvasInfo").innerHTML = `
+                        <ul class="list-group pb-2">
+                            <li class="list-group-item list-group-item-action">ID: ${user.id}</li>
+                            <li class="list-group-item list-group-item-action">Address: ${user.address}</li>
+                            <li class="list-group-item list-group-item-action">Age: ${user.age}</li>
+                        </ul>`;
+                    });
+
+                signup.innerText = "Log out";
+                signup.href = "login.html";
+                signup.setAttribute("onclick", "localStorage.removeItem('userId')");
+            }
+        });
     </script>
 
 

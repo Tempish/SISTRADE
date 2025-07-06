@@ -24,12 +24,33 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link active" href="manageProducts.html">My products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html">Log In</a></li>
-                    <li class="nav-item"><a class="nav-link" href="signup.html">Sign Up</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html" id="login">Log In</a></li>
+                    <li class="nav-item"><a class="nav-link" href="signup.html" id="signup">Sign Up</a></li>
                 </ul>
             </div>
         </header>
     </nav>
+
+    <div class="offcanvas offcanvas-end bg-sunbeam" tabindex="-1" id="userOffcanvas"
+        aria-labelledby="userOffcanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title display-3" id="userOffcanvasLabel">User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="userOffcanvasInfo">
+                <ul class="list-group pb-2">
+                    <li class="list-group-item list-group-item-action">Name</li>
+                    <li class="list-group-item list-group-item-action">Address</li>
+                    <li class="list-group-item list-group-item-action">Age</li>
+                </ul>
+            </div>
+            <div class="d-flex flex-column">
+                <button onclick="window.location.href='editProfile.html'" type="button" class="btn btn-outline-dark"
+                    id="btnEdit">Editar perfil</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container col-12">
         <h1 class="m-5 display-5 text-center" id="formTitulo">Agregar producto a su cuenta</h1>
@@ -64,8 +85,8 @@
 
                 <div class="row row-cols-5 justify-content-center">
                     <div class="col-auto col-md"></div>
-                    <div class="col-sm-4 col-md d-flex flex-column">
-                        <button type="submit" class="btn btn custom-btn mb-2" id="btnGuardar">Agregar producto</button>
+                    <div class="col-4 col-md d-flex flex-column">
+                        <button type="submit" class="btn custom-btn mb-2" id="btnGuardar">Agregar producto</button>
 
 
                     </div>
@@ -110,15 +131,21 @@
     <script>
         const registerProductUrl = "http://localhost:8080/api/product";
         const apiUrl = "http://localhost:8080/api/product";
+        const apiUserUrl = "http://localhost:8080/api/user";
 
         document.getElementById("addProductForm").addEventListener("submit", function (event) {
             event.preventDefault();
-
+            
+            const ownerId = parseInt(localStorage.getItem('userId'));
+            if(!ownerId) {
+                alert("Inicie sesión primero!");
+                return;
+            }
+            
             const name = document.getElementById("productName").value;
             const marketPrice = parseFloat(document.getElementById("marketPrice").value);
             const type = document.getElementById("type").value;
             const description = document.getElementById("description").value;
-            const ownerId = parseInt(localStorage.getItem('userId'));
             const id = parseInt(document.getElementById("idProducto").value);
             //editar
             if (id) {
@@ -190,17 +217,17 @@
                     const productosFiltrados = productos.filter(p => p.ownerId === userId);
                     productosFiltrados.forEach(producto => {
                         tabla.innerHTML += `
-              <tr>
-                <td>${producto.name}</td>
-                <td>${producto.marketPrice}</td>
-                <td>${producto.type}</td>
-                <td>${producto.description}</td>
-                
-                <td>
-                  <button class="btn custom-btn btn-sm" onclick="editarProducto(${producto.id})">Editar</button>
-                  <button class="btn custom-btn btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
-                </td>
-              </tr>`;
+                        <tr>
+                            <td>${producto.name}</td>
+                            <td>${producto.marketPrice}</td>
+                            <td>${producto.type}</td>
+                            <td>${producto.description}</td>
+                            
+                            <td>
+                            <button class="btn custom-btn btn-sm" onclick="editarProducto(${producto.id})">Editar</button>
+                            <button class="btn custom-btn btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
+                            </td>
+                        </tr>`;
                     });
                 });
         }
@@ -236,6 +263,36 @@
             resetFormulario();
             cargarProductos();
         };
+
+        //cambia el navbar si hay un usuario loggeado
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem('userId')) {
+                const login = document.getElementById("login");
+                const signup = document.getElementById("signup");
+
+                login.setAttribute("data-bs-toggle", "offcanvas");
+                login.href = "#userOffcanvas";
+                login.role = "button";
+                login.setAttribute("aria-controls", "userOffcanvas");
+                fetch(`${apiUserUrl}/${localStorage.getItem('userId')}`)
+                    .then(res => res.json())
+                    .then(user => {
+                        login.innerText = user.name;
+
+                        document.getElementById("userOffcanvasLabel").innerText = user.name;
+                        document.getElementById("userOffcanvasInfo").innerHTML = `
+                        <ul class="list-group pb-2">
+                            <li class="list-group-item list-group-item-action">ID: ${user.id}</li>
+                            <li class="list-group-item list-group-item-action">Address: ${user.address}</li>
+                            <li class="list-group-item list-group-item-action">Age: ${user.age}</li>
+                        </ul>`;
+                    });
+
+                signup.innerText = "Log out";
+                signup.href = "login.html";
+                signup.setAttribute("onclick", "localStorage.removeItem('userId')");
+            }
+        });
     </script>
 </body>
 
