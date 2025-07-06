@@ -24,6 +24,14 @@ public class TradeRequest {
         this.offeredProductId = offeredProductId;
     }
 
+
+    public TradeRequest() {
+        this.requestId = 0;
+        this.receiverId = 0;
+        this.requestedProductId = 0;
+        this.offeredProductId = 0;
+    }
+
     public Integer getRequestId() {
         return requestId;
     }

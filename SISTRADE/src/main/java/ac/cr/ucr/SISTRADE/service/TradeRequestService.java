@@ -31,6 +31,12 @@ public class TradeRequestService {
         return this.TradeRepository.findById(id);
     }
 
+    public Optional<TradeRequest> findByOfferedProductId(Integer id){
+
+        return this.TradeRepository.findByOfferedProductId(id);
+    }
+
+
 
 
     }

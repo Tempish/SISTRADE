@@ -33,23 +33,35 @@ public class TradeRequestController {
             }
             return ResponseEntity.badRequest().body(errors);
         }
-        List<TradeRequest> tradeRequestOp = this.requestService.findByUserId(tradeRequest.getReceiverId());
 
-        if(tradeRequestOp.isEmpty()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("There's no requests");
+        Optional<TradeRequest> tradeFind = this.requestService.findByOfferedProductId(tradeRequest.getOfferedProductId());
+        if(tradeFind.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You are already offering this product!!!!");
         }
+
+
 
         return ResponseEntity.status(HttpStatus.CREATED).body(this.requestService.saveRequest(tradeRequest));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findByReceiverId(@PathVariable Integer id){
-        Optional<TradeRequest> requestFind = this.requestService.findByRequestId(id);
-        if(!requestFind.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This request doesn't exist");
+      //  Optional<TradeRequest> requestFind = this.requestService.findByRequestId(id);
+
+        List<TradeRequest> tradeRequestOp = this.requestService.findByUserId(id);
+
+        if(tradeRequestOp.isEmpty()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("There's no requests");
         }
 
-        return ResponseEntity.ok(requestFind);
+
+//        if(!requestFind.isPresent()){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This request doesn't exist");
+//        }
+//        return ResponseEntity.ok(requestFind);
+        return ResponseEntity.ok(tradeRequestOp);
+
+
     }
 
 
