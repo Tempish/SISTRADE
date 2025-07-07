@@ -23,8 +23,10 @@
             <div class="collapse navbar-collapse" id="menu">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link active" href="index.html">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="manageProducts.html" id="manageProducts" style="display: none;">My products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="requests.html" id="requests" style="display: none;">Trade Requests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manageProducts.html" id="manageProducts"
+                            style="display: none;">My products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="requests.html" id="requests"
+                            style="display: none;">Trade Requests</a></li>
                     <li class="nav-item"><a class="nav-link" href="login.html" id="login">Log In</a></li>
                     <li class="nav-item"><a class="nav-link" href="signup.html" id="signup">Sign Up</a></li>
                 </ul>
@@ -101,6 +103,7 @@
     <script>
         const apiProductUrl = "http://localhost:8080/api/product";
         const apiUserUrl = "http://localhost:8080/api/user";
+        const apiRequestUrl = "http://localhost:8080/api/trade";
 
         let allProducts = [];
 
@@ -193,8 +196,36 @@
                             <td class="fw-light" style="word-break: break-word;">${producto.description}</td>
                             <td class="fw-light" style="word-break: break-word;"><input type="radio" name="productToTrade" value="${producto.id}"></td>
                         </tr>`;
+
             });
+            document.getElementById("tradeRequestButton").setAttribute("onclick", `enviarSolicitud(${producto.id},${producto.ownerId})`);
             document.getElementById("tradeRequestButton").classList = "btn custom-btn";
+        }
+
+        function enviarSolicitud(requestedProductId, receiverId) {
+            let selectedProduct = document.querySelector('input[name="productToTrade"]:checked');
+            if (!selectedProduct) {
+                alert("Selecciona un producto primero!");
+                return;
+            }
+
+            offeredProductId = selectedProduct.value;
+
+            fetch(apiRequestUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ receiverId, requestedProductId, offeredProductId })
+            })
+                .then(res => {
+                    if (res.status == 404) {
+                        alert("Usted ya esta ofreciendo este producto en otro intercambio!");
+                        return;
+                    }
+                    res.json()
+                        .then(request => {
+                            alert("Solicitud enviada!");
+                        })
+                });
         }
 
         //filtrado para mientras escribe
@@ -214,9 +245,13 @@
 
             //cambia el navbar si hay un usuario loggeado
             if (localStorage.getItem('userId')) {
+                const manageProducts = document.getElementById("manageProducts");
+                const requests = document.getElementById("requests");
                 const login = document.getElementById("login");
                 const signup = document.getElementById("signup");
 
+                manageProducts.style.display = '';
+                requests.style.display = '';
                 login.setAttribute("data-bs-toggle", "offcanvas");
                 login.href = "#userOffcanvas";
                 login.role = "button";
