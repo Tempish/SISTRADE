@@ -81,21 +81,16 @@ public class TradeRequestController {
         Optional<TradeRequest> tradeFind = this.requestService.findByRequestId(id);
 
 
-        List<TradeRequest> tradeOffer = this.requestService.findByOfferedProductId(tradeFind.get().getOfferedProductId());
-        if(!tradeOffer.isEmpty()){
-           for (TradeRequest request : tradeOffer){
+        List<TradeRequest> tradeRequests = this.requestService.findByOfferedProductId(tradeFind.get().getOfferedProductId());
+        tradeRequests.addAll(this.requestService.findByRequestedProductId(tradeFind.get().getRequestedProductId()));
+        tradeRequests.addAll(this.requestService.findByOfferedProductId(tradeFind.get().getRequestedProductId()));
+        tradeRequests.addAll(this.requestService.findByRequestedProductId(tradeFind.get().getOfferedProductId()));
+        if(!tradeRequests.isEmpty()){
+           for (TradeRequest request : tradeRequests){
 
                this.requestService.deleteRequestById(request.getRequestId());
 
            }
-        }
-        List<TradeRequest> tradeRequested = this.requestService.findByRequestedProductId(tradeFind.get().getRequestedProductId());
-        if(!tradeRequested.isEmpty()){
-            for (TradeRequest request : tradeRequested){
-
-                this.requestService.deleteRequestById(request.getRequestId());
-
-            }
         }
         this.requestService.deleteRequestById(id);
         return ResponseEntity.noContent().build();
