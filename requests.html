@@ -117,14 +117,12 @@
 
                 for (const request of requests) {
 
-                    const [fromProduct, toProduct, fromUser] = await Promise.all([
+                    const [fromProduct, toProduct] = await Promise.all([
                         fetch(`${apiProductUrl}/${request.offeredProductId}`).then(res => res.json()),
-                        fetch(`${apiProductUrl}/${request.requestedProductId}`).then(res => res.json()),
-                        fetch(`${apiUserUrl}/${request.receiverId}`).then(res => res.json())
+                        fetch(`${apiProductUrl}/${request.requestedProductId}`).then(res => res.json())
                     ]);
 
-
-
+                    const offeree = await fetch(`${apiUserUrl}/${fromProduct.ownerId}`).then(res => res.json());
 
                     const card = document.createElement("div");
                     card.className = "col";
@@ -132,14 +130,14 @@
                         <div class="card h-100">
                             <div class="card-body d-flex flex-column justify-content-center">
                                 <h5 class="card-title display-6">Solicitud de intercambio</h5>
-                                <p class="card-subtitle lead">De: ${fromUser.name}</p>
+                                <p class="card-subtitle lead">De: ${offeree.name}</p>
                                 <ul class="list-group list-group-flush mb-2">
                                     <li class="list-group-item"><strong>Producto que ofrece:</strong> ${fromProduct.name} (${fromProduct.type})</li>
                                     <li class="list-group-item"><strong>Producto que desea:</strong> ${toProduct.name} (${toProduct.type})</li>
                                 </ul>
                                 <div class="d-flex justify-content-center gap-3 mt-3">
-                                    <button class="btn btn-success w-100" onclick="aceptarSolicitud(${request.id})">Aceptar</button>
-                                    <button class="btn btn-danger w-100" onclick="denegarSolicitud(${request.id})">Denegar</button>
+                                    <button class="btn btn-success w-100" onclick="aceptarSolicitud(${request.requestId})">Aceptar</button>
+                                    <button class="btn btn-danger w-100" onclick="denegarSolicitud(${request.requestId})">Denegar</button>
                                 </div>
                             </div>
                         </div>
@@ -159,9 +157,45 @@
 
 
         function aceptarSolicitud(id) {
-
-
             if (confirm("¿Está seguro que desea aceptar este tradeo?")) {
+                fetch(`${apiRequestUrl}/accepted/${id}`)
+                    .then(res => res.json())
+                    .then(request => {
+
+                        fetch(`${apiProductUrl}/${request.offeredProductId}`)
+                            .then(res => res.json())
+                            .then(product => {
+                                const ownerId = parseInt(localStorage.getItem('userId'));
+                                const offereeId = product.ownerId;
+                                const marketPrice = product.marketPrice;
+                                const name = product.name;
+                                const type = product.type;
+                                const description = product.description;
+
+                                console.log({ ownerId, marketPrice, name, type, description });
+                                fetch(`${apiProductUrl}/${product.id}`, {
+                                    method: "PUT",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ ownerId, marketPrice, name, type, description })
+                                })
+                                    .then(fetch(`${apiProductUrl}/${request.requestedProductId}`)
+                                        .then(res => res.json())
+                                        .then(product => {
+                                            const ownerId = offereeId;
+                                            const marketPrice = product.marketPrice;
+                                            const name = product.name;
+                                            const type = product.type;
+                                            const description = product.description;
+
+                                            console.log({ ownerId, marketPrice, name, type, description });
+                                            fetch(`${apiProductUrl}/${product.id}`, {
+                                                method: "PUT",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ ownerId, marketPrice, name, type, description })
+                                            })
+                                        }))
+                            })
+                    })
                 fetch(`${apiRequestUrl}/accepted/${id}`,
                     { method: "DELETE" })
                     .then(() => {
@@ -169,11 +203,8 @@
                         cargarRequests();
                     });
             }
-
-
-
-
         }
+
 
         function denegarSolicitud(id) {
             if (confirm("¿Está seguro que desea denegar este tradeo?")) {
@@ -184,8 +215,6 @@
                         cargarRequests();
                     });
             }
-
-
         }
     </script>
 </body>

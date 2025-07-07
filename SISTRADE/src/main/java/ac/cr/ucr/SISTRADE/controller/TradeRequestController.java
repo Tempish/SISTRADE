@@ -63,6 +63,17 @@ public class TradeRequestController {
 
     }
 
+    @GetMapping("/accepted/{id}")
+    public ResponseEntity<?> findByRequestId(@PathVariable Integer id){
+        Optional<TradeRequest> tradeRequestOp = this.requestService.findByRequestId(id);
+
+        if(!tradeRequestOp.isPresent()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("There's no requests");
+        }
+
+        return ResponseEntity.ok(tradeRequestOp);
+    }
+
 
     @DeleteMapping("/accepted/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id){
