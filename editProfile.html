@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Editar Perfil</title>
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/colors.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class='bg-sunbeam bg-opacity-25'>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-honey">
+		<header class="container">
+			<h1>
+				<a class="navbar-brand" href="index.html"><img src="assets/imgs/sistradelogowide.png" class="img-fluid"
+						width="220px" alt="SISTRADE"></a>
+			</h1>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="menu">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+					<li class="nav-item"><a class="nav-link" href="manageProducts.html">My products</a></li>
+					<li class="nav-item"><a class="nav-link" href="login.html" id="login">Log In</a></li>
+					<li class="nav-item"><a class="nav-link" href="signup.html" id="signup">Sign Up</a></li>
+				</ul>
+			</div>
+		</header>
+	</nav>
+
+	<div class="offcanvas offcanvas-end bg-sunbeam" tabindex="-1" id="userOffcanvas"
+		aria-labelledby="userOffcanvasLabel">
+		<div class="offcanvas-header">
+			<h5 class="offcanvas-title display-3" id="userOffcanvasLabel">User</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="offcanvas-body">
+			<div id="userOffcanvasInfo">
+				<ul class="list-group pb-2">
+					<li class="list-group-item list-group-item-action">Name</li>
+					<li class="list-group-item list-group-item-action">Address</li>
+					<li class="list-group-item list-group-item-action">Age</li>
+				</ul>
+			</div>
+			<div class="d-flex flex-column">
+				<button onclick="window.location.href='editProfile.html'" type="button" class="btn btn-outline-dark"
+					id="btnEdit">Editar perfil</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="container col-sm-12 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+		<h1 class="m-5 display-3 text-center" id="formTitulo">Editar perfil</h1>
+
+		<img src="assets/imgs/userLogo.png" alt="logo"
+			class="img-fluid position-absolute start-50 translate-middle-x logo-user" />
+
+		<div class="card p-4 mb-4">
+			<form id="signupForm">
+				<div class="mb-3">
+					<label for="name" class="form-label">Nombre</label>
+					<input type="text" class="form-control" id="name" required>
+				</div>
+
+				<div class="mb-3">
+					<label for="address" class="form-label">Dirección</label>
+					<input type="text" class="form-control" id="address" required>
+				</div>
+
+				<div class="mb-3">
+					<label for="age" class="form-label">Edad</label>
+					<input type="number" class="form-control " id="age" required>
+				</div>
+
+				<div class="mb-3">
+					<label for="password" class="form-label">Verificar contraseña</label>
+					<input type="password" class="form-control" id="password" required>
+				</div>
+
+				<div class="d-flex flex-wrap justify-content-center gap-3">
+					<button type="submit" class="btn custom-btn mb-2" id="btnGuardar" style="width: 220px;">Actualizar
+						perfil</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		const apiUrl = "http://localhost:8080/api/user";
+
+		// Rellenar el formulario con los datos del usuario al cargar
+		document.addEventListener("DOMContentLoaded", () => {
+			const userId = localStorage.getItem('userId');
+			if (!userId) {
+				alert("No hay usuario logueado.");
+				window.location.href = "login.html";
+				return;
+			}
+
+			fetch(`${apiUrl}/${userId}`)
+				.then(res => res.json())
+				.then(user => {
+					document.getElementById("name").value = user.name;
+					document.getElementById("address").value = user.address;
+					document.getElementById("age").value = user.age;
+				})
+				.catch(err => {
+					alert("Error al obtener datos del usuario");
+					console.error(err);
+				});
+
+			// También actualiza el navbar si está logueado
+			const login = document.getElementById("login");
+			const signup = document.getElementById("signup");
+
+			login.setAttribute("data-bs-toggle", "offcanvas");
+			login.href = "#userOffcanvas";
+			login.role = "button";
+			login.setAttribute("aria-controls", "userOffcanvas");
+			fetch(`${apiUrl}/${userId}`)
+				.then(res => res.json())
+				.then(user => {
+					login.innerText = user.name;
+					document.getElementById("userOffcanvasLabel").innerText = user.name;
+					document.getElementById("userOffcanvasInfo").innerHTML = `
+						<ul class="list-group pb-2">
+							<li class="list-group-item list-group-item-action">ID: ${user.id}</li>
+							<li class="list-group-item list-group-item-action">Address: ${user.address}</li>
+							<li class="list-group-item list-group-item-action">Age: ${user.age}</li>
+						</ul>`;
+				});
+
+			signup.innerText = "Log out";
+			signup.href = "login.html";
+			signup.setAttribute("onclick", "localStorage.removeItem('userId')");
+		});
+
+		// Manejo del formulario de edición
+		document.getElementById("signupForm").addEventListener("submit", function (event) {
+			event.preventDefault();
+
+			const userId = localStorage.getItem('userId');
+			if (!userId) {
+				alert("No hay usuario logueado.");
+				return;
+			}
+			const id = parseInt(userId);
+			const name = document.getElementById("name").value;
+			const password = document.getElementById("password").value;
+			const address = document.getElementById("address").value;
+			const age = parseInt(document.getElementById("age").value);
+
+			fetch(`${apiUrl}/edit/${userId}`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ id, name, password, address, age })
+			})
+				.then(res => {
+					if (!res.ok) return res.text().then(msg => { throw new Error(msg); });
+					res.json()
+					
+						.then(user => {
+							console.log(user);
+							if (user.id == 0) {
+								alert("Contraseña incorrecta!!!!!");
+								return;
+
+							}
+							alert("Perfil actualizado con éxito");
+							window.location.href = "index.html";
+						})
+						.catch(err => {
+							alert("Error al actualizar: " + err.message);
+						});
+
+
+				})
+
+		});
+	</script>
+</body>
+
+</html>

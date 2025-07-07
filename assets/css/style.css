@@ -11,7 +11,13 @@ background-color: #d8b528  !important;
 
 }
 
-
+.logo-user{
+ width: 75px;
+ margin-top: -50px;
+ z-index: 1;
+  
+   
+}
 
 .logo-sistrade {
   width: 200px;

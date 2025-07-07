@@ -86,7 +86,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/edit/{id}")
     public ResponseEntity<?> editUser(@Validated @PathVariable Integer id, @RequestBody User user, BindingResult result){
 
         if (result.hasErrors()) {
@@ -101,6 +101,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID "+id+" doesn't exist!");
         }
 
-        return ResponseEntity.ok(this.userService.editUser(id, user));
+        return ResponseEntity.ok(this.userService.editUserByPassword(id, user));
     }
 }

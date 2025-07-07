@@ -110,7 +110,7 @@
                 body: JSON.stringify({ name, password })
             })
                 .then(res => {
-                    if (res.status == 404) {
+                    if (res.status == 404 ) {
                         alert("Nombre o contraseña incorrectos");
                         return; //finalizar 
                     } else if (res.ok) {

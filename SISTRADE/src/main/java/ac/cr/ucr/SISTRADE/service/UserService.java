@@ -29,14 +29,22 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
 
-    public User editUser(Integer id, User user){
+    public User editUserByPassword(Integer id, User user){
         Optional<User>  userOptional = this.userRepository.findById(id);
         if (userOptional.isEmpty()) {
             return new User();
         }
 
-        this.userRepository.deleteById(id);
-        return this.userRepository.save(user);
+        User userOpt = userOptional.get();
+System.out.println(user.getPassword() + "  contrasena OPT: " +userOpt.getPassword());
+            if (userOpt.getPassword().equals(user.getPassword())){
+                userOpt.setName(user.getName());
+                userOpt.setAddress(user.getAddress());
+                userOpt.setAge(user.getAge());
+                return this.userRepository.save(userOpt);
+
+            }
+            return new User();
 
     }
 
@@ -47,17 +55,15 @@ public class UserService {
 
             User user = userOpt.get();
 
-            if (user.getName().equals(name) && user.getPassword().equals(password)){
+            if (user.getPassword().equals(password)){
 
                 return Optional.of(user);
 
             }
-
             return Optional.empty();
-
         }
 
-        return this.userRepository.findByPassword(password);
+        return Optional.empty();
     }
 
 
